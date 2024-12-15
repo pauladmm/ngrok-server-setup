@@ -1,0 +1,55 @@
+server {
+  listen 80;
+  listen 443 ssl;
+
+  server_name myserver www.myserver;
+  root /var/www/myserver/html;
+
+  ssl_certificate /etc/ssl/certs/myserver.crt;
+  ssl_certificate_key /etc/ssl/private/myserver.key;
+
+  
+  ssl_protocols TLSv1.2 TLSv1.3;  
+  ssl_ciphers 'TLS_AES_128_GCM_SHA256:TLS_AES_256_GCM_SHA384:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384';  
+  ssl_prefer_server_ciphers on; 
+
+
+  location / {
+    try_files $uri $uri/ =404;
+  }
+
+  location /logo.png {
+    alias /var/www/myserver/html/assets/logo.png;
+    add_header Content-Disposition 'attachment; filename="logo.png"';
+  }
+
+  location /admin {
+    auth_basic "Área restringida";
+    auth_basic_user_file /etc/nginx/.htpasswd_admin;
+    try_files /admin.html =404; 
+  }
+
+  location /status {
+    proxy_pass http://localhost:19999;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "upgrade";
+    auth_basic "Área restringida";
+    auth_basic_user_file /etc/nginx/.htpasswd_status;
+
+    location /status/api {
+        proxy_pass http://localhost:19999/api;
+    }
+  }
+
+  error_page 404 /error404.html;
+
+  location /error404.html {
+    root /var/www/myserver/html;
+    internal;
+  }
+}
