@@ -1,6 +1,8 @@
 body {
   font-family: Arial, sans-serif;
-  background-color: #e6f2ff;
+  background-image: url(./bg.png);
+  background-size: cover;
+  background-repeat: no-repeat;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -15,13 +17,16 @@ body {
   padding: 30px;
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  max-width: 500px;
+  max-width: 600px;
   width: 100%;
 }
 
 .image-placeholder {
-  background-color: #cccccc;
-  height: 250px;
+  background-image: url(./reindeers.png);
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  aspect-ratio: 3/2;
   display: flex;
   justify-content: center;
   align-items: center;
